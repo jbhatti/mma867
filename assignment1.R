@@ -29,8 +29,17 @@ write.csv(predicted.count, file = "PredictCount.csv")
 #####################################################
 #                  ATTEMPT 2                        #
 #      Using Log & exp functions to fix error       #
-#####################################################
+#      and convert some numeric variables in        #
+#      factors                                      #
+#####################################################   
 
+
+#variables were in integer, converted them into factors
+train.data$season <- factor(train.data$season)
+train.data$weather<- factor(train.data$weather)
+
+test.data$season <- factor(test.data$season)
+test.data$weather<- factor(test.data$weather)
 
 #initial submission failed due to negative counts, added log function to avoid negatives
 fit1<-lm(log(count) ~ season + holiday + workingday + weather + temp + atemp + humidity + windspeed, train.data)
@@ -59,8 +68,8 @@ X<-model.matrix(datetime~
                 + windspeed*season*weather
                 + holiday
                 + workingday
-                , combine.data)[,-1]
-X<-cbind(combine.data$datetime,X)
+                , train.data)[,-1]
+X<-cbind(train.data$datetime,X)
 
 
 X.prediction<-subset(X,X[,1]>=10888)
@@ -89,14 +98,6 @@ write.csv(predicted.count, file = "PreditCount2.csv") # export the predicted pri
 #####################################################
 
 #linear regression with feature engineering
-
-#variables were in integer, converted them into factors
-train.data$season <- factor(train.data$season)
-train.data$weather<- factor(train.data$weather)
-
-test.data$season <- factor(test.data$season)
-test.data$weather<- factor(test.data$weather)
-
 
 #separating datetime to use as variables for prediction
 date <- ymd_hms(train.data$datetime)
